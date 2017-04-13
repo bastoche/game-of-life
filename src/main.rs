@@ -2,7 +2,7 @@ fn main() {
   println!("Hello, world!");
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 enum State {
   Dead,
   Alive
@@ -30,7 +30,7 @@ impl Grid {
 }
 
 fn next_generation(grid: &Grid) -> Grid {
-  Grid { cells: Vec::new() }
+  Grid { cells: grid.cells.clone() }
 }
 
 #[cfg(test)]
@@ -38,7 +38,6 @@ mod tests {
   use super::*;
 
   #[test]
-  #[ignore]
   fn next_generation_when_all_cells_are_dead() {
     let grid = Grid::from_string("...");
     assert_eq!(grid, next_generation(&grid));
