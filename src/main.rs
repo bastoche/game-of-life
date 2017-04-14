@@ -6,7 +6,7 @@ fn main() {
   }
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 enum State {
   Dead,
   Alive
@@ -39,8 +39,8 @@ impl fmt::Display for Grid {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     let mut result = String::new();
     for line in self.cells.iter() {
-      for state in line.iter() {
-        let c = if state == &State::Alive { '*' } else { '.' };
+      for &state in line.iter() {
+        let c = if state == State::Alive { '*' } else { '.' };
         result.push(c);
       }
       result.push('\n');
@@ -49,10 +49,10 @@ impl fmt::Display for Grid {
   }
 }
 
-fn next_state(state: &State, living_neighbours_count: u8) -> State {
+fn next_state(state: State, living_neighbours_count: u8) -> State {
   match (state, living_neighbours_count) {
-    (&State::Dead, 3) => State::Alive,
-    (&State::Alive, c) if 2 <= c && c <= 3 => State::Alive,
+    (State::Dead, 3) => State::Alive,
+    (State::Alive, c) if 2 <= c && c <= 3 => State::Alive,
     _ => State::Dead
   }
 }
@@ -69,17 +69,17 @@ fn living_neighbours_count(cells: &Vec<Vec<State>>, x: usize, y: usize) -> u8 {
     cell_at(&cells, x + 1, y + width - 1, width, height),
     cell_at(&cells, x + 1, y, width, height),
     cell_at(&cells, x + 1, y + 1, width, height),
-  ].iter().fold(0, |sum, state| sum + if state == &&State::Alive { 1 } else { 0 })
+  ].iter().fold(0, |sum, &state| sum + if state == State::Alive { 1 } else { 0 })
 }
 
-fn cell_at(cells: &Vec<Vec<State>>, x: usize, y: usize, width: usize, height: usize) -> &State {
-  &cells[y % height][x % width]
+fn cell_at(cells: &Vec<Vec<State>>, x: usize, y: usize, width: usize, height: usize) -> State {
+  cells[y % height][x % width]
 }
 
 fn next_generation(grid: &Grid) -> Grid {
   let cells = grid.cells.iter().enumerate().map(
     |(y, line)| line.iter().enumerate().map(
-      |(x, state)| next_state(state, living_neighbours_count(&grid.cells, x, y))
+      |(x, &state)| next_state(state, living_neighbours_count(&grid.cells, x, y))
     ).collect()
   ).collect();
   Grid { cells: cells }
@@ -98,28 +98,28 @@ mod tests {
 
   #[test]
   fn a_live_cell_with_less_than_2_living_neighbours_will_die() {
-    assert_eq!(State::Dead, next_state(&State::Alive, 0));
-    assert_eq!(State::Dead, next_state(&State::Alive, 1));
+    assert_eq!(State::Dead, next_state(State::Alive, 0));
+    assert_eq!(State::Dead, next_state(State::Alive, 1));
   }
 
   #[test]
   fn a_live_cell_with_2_or_3_living_neighbours_will_stay_alive() {
-    assert_eq!(State::Alive, next_state(&State::Alive, 2));
-    assert_eq!(State::Alive, next_state(&State::Alive, 3));
+    assert_eq!(State::Alive, next_state(State::Alive, 2));
+    assert_eq!(State::Alive, next_state(State::Alive, 3));
   }
 
   #[test]
   fn a_live_cell_with_more_than_3_living_neighbours_will_die() {
-    assert_eq!(State::Dead, next_state(&State::Alive, 4));
-    assert_eq!(State::Dead, next_state(&State::Alive, 5));
-    assert_eq!(State::Dead, next_state(&State::Alive, 6));
-    assert_eq!(State::Dead, next_state(&State::Alive, 7));
-    assert_eq!(State::Dead, next_state(&State::Alive, 8));
+    assert_eq!(State::Dead, next_state(State::Alive, 4));
+    assert_eq!(State::Dead, next_state(State::Alive, 5));
+    assert_eq!(State::Dead, next_state(State::Alive, 6));
+    assert_eq!(State::Dead, next_state(State::Alive, 7));
+    assert_eq!(State::Dead, next_state(State::Alive, 8));
   }
 
   #[test]
   fn a_dead_cell_with_3_living_neighbours_will_live() {
-    assert_eq!(State::Alive, next_state(&State::Dead, 3));
+    assert_eq!(State::Alive, next_state(State::Dead, 3));
   }
 
   #[test]
