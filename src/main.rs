@@ -49,7 +49,6 @@ impl fmt::Display for Grid {
   }
 }
 
-
 fn next_state(state: &State, living_neighbours_count: u8) -> State {
   match (state, living_neighbours_count) {
     (&State::Dead, 3) => State::Alive,
@@ -136,6 +135,12 @@ mod tests {
   #[test]
   fn next_generation_when_all_cells_are_dead() {
     let grid = Grid::from_string("...\n...\n...");
+    assert_eq!(grid, next_generation(&grid));
+  }
+
+  #[test]
+  fn next_generation_for_block() {
+    let grid = Grid::from_string("....\n.**.\n.**.\n....");
     assert_eq!(grid, next_generation(&grid));
   }
 
