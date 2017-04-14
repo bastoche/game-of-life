@@ -1,5 +1,9 @@
 fn main() {
-  println!("Hello, world!");
+  let mut grid = Grid::from_string(".....\n.....\n.***.\n.....\n.....");
+  loop {
+    println!("{}", grid);
+    grid = next_generation(&grid);
+  }
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -26,6 +30,22 @@ impl Grid {
       }).collect()
     }).collect();
     Grid { cells: cells }
+  }
+}
+
+use std::fmt;
+
+impl fmt::Display for Grid {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    let mut result = String::new();
+    for line in self.cells.iter() {
+      for state in line.iter() {
+        let c = if state == &State::Alive { '*' } else { '.' };
+        result.push(c);
+      }
+      result.push('\n');
+    }
+    write!(f, "---\n{}---", result)
   }
 }
 
