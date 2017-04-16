@@ -48,21 +48,23 @@ impl fmt::Display for Grid {
 fn living_neighbours_count(cells: &Vec<Vec<State>>, x: usize, y: usize) -> u8 {
   let height = cells.len();
   let width = cells[0].len();
+
+  let cell_at = |x: usize, y: usize| -> State {
+    cells[y % height][x % width]
+  };
+
   [
-    cell_at(&cells, x + width - 1, y + width - 1, width, height),
-    cell_at(&cells, x + width - 1, y, width, height),
-    cell_at(&cells, x + width - 1, y + 1, width, height),
-    cell_at(&cells, x, y + width - 1, width, height),
-    cell_at(&cells, x, y + 1, width, height),
-    cell_at(&cells, x + 1, y + width - 1, width, height),
-    cell_at(&cells, x + 1, y, width, height),
-    cell_at(&cells, x + 1, y + 1, width, height),
+    cell_at(x + width - 1, y + width - 1),
+    cell_at(x + width - 1, y),
+    cell_at(x + width - 1, y + 1),
+    cell_at(x, y + width - 1),
+    cell_at(x, y + 1),
+    cell_at(x + 1, y + width - 1),
+    cell_at(x + 1, y),
+    cell_at(x + 1, y + 1),
   ].iter().fold(0, |sum, &state| sum + if state == State::Alive { 1 } else { 0 })
 }
 
-fn cell_at(cells: &Vec<Vec<State>>, x: usize, y: usize, width: usize, height: usize) -> State {
-  cells[y % height][x % width]
-}
 
 #[cfg(test)]
 mod tests {
