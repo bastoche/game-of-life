@@ -41,7 +41,7 @@ impl fmt::Display for Grid {
       }
       result.push('\n');
     }
-    write!(f, "---\n{}---", result)
+    write!(f, "{}", result)
   }
 }
 
