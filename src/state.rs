@@ -41,4 +41,16 @@ mod tests {
   fn a_dead_cell_with_3_living_neighbours_will_live() {
     assert_eq!(State::Alive, next_state(State::Dead, 3));
   }
+  
+  #[test]
+  fn a_dead_cell_should_stay_dead_else() {
+    assert_eq!(State::Dead, next_state(State::Dead, 0));
+    assert_eq!(State::Dead, next_state(State::Dead, 1));
+    assert_eq!(State::Dead, next_state(State::Dead, 2));
+    assert_eq!(State::Dead, next_state(State::Dead, 4));
+    assert_eq!(State::Dead, next_state(State::Dead, 5));
+    assert_eq!(State::Dead, next_state(State::Dead, 6));
+    assert_eq!(State::Dead, next_state(State::Dead, 7));
+    assert_eq!(State::Dead, next_state(State::Dead, 8));
+  }  
 }
